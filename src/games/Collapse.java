@@ -26,6 +26,40 @@ public class Collapse extends WinApp {
         showGrid(g);
     }
 
+    public void mouseClicked(MouseEvent me){
+        int x = me.getX(), y = me.getY();
+        if(x < xM || y < yM){return;}
+        int r = r(y), c = c(x);
+        if(r<nR && c <nC){
+            crAction(c,r);
+        }
+        repaint();
+    }
+
+    public static void crAction(int c, int r){
+        //System.out.println("("+c+","+r+")");
+        if(infectable(c,r)){infect(c,r,grid[c][r]);}
+    }
+
+    public static boolean infectable(int c, int r){
+        int v =  grid[c][r];
+        if( v==0){return false;}
+        if(r>0){if(grid[c][r-1]== v){return true;}}
+        if(c>0){if(grid[c-1][r]== v){return true;}}
+        if(r>nR-1){if(grid[c][r+1]== v){return true;}}
+        if(c>nC-1){if(grid[c+1][r]== v){return true;}}
+        return false;
+    }
+
+    public static void infect(int c,int r, int v){
+        if(grid[c][r]!= v){return;}
+        grid[c][r]=0;
+        if(r>0){infect(c,r-1,v);}
+        if(c>0){infect(c-1,r,v);}
+        if(r<nR-1){infect(c,r+1,v);}
+        if(c<nC-1){infect(c+1,r,v);}
+    }
+
     public static void rndColors(int k){
         for (int c=0; c<nC; c++){
             for(int r=0;r<nR;r++){
@@ -45,7 +79,9 @@ public class Collapse extends WinApp {
     }
 
     public static int x(int c){return xM + c * W;}
-    public static int y(int c){return yM + c * H;}
+    public static int y(int r){return yM + c * H;}
+    private static int c(int x){return (x-xM)/W;} //unsafe fixed in mouseClicked
+    private static int r(int y){return (y-yM)/H;}
 
 
     public static void main (String[] args){
