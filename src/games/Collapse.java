@@ -36,6 +36,7 @@ public class Collapse extends WinApp implements ActionListener {
 
     public static void showRemaining(Graphics g){
         String str = "Bricks remaining: " + bricksRemaining;
+        if(noMorePlays()){str += "No More Plays left!";}
         g.setColor(Color.BLACK);
         g.drawString(str,50,25);
     }
@@ -51,6 +52,7 @@ public class Collapse extends WinApp implements ActionListener {
 
     public void mouseClicked(MouseEvent me){
         int x = me.getX(), y = me.getY();
+        if(x<20&&y<20){startNewGame();}
         if(x < xM || y < yM){return;}
         int r = r(y), c = c(x);
         if(r<nR && c <nC){
@@ -59,6 +61,14 @@ public class Collapse extends WinApp implements ActionListener {
         repaint();
     }
 
+    public static boolean noMorePlays(){
+        for(int r=0;r<nR;r++){
+            for(int c=0;c<nC;c++){
+                if(infectable(c,r)){return false;}
+            }
+        }
+        return true;
+    }
     public static void crAction(int c, int r){
         //System.out.println("("+c+","+r+")");
         if(infectable(c,r)){infect(c,r,grid[c][r]);}
