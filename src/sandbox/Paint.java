@@ -84,7 +84,6 @@ public class Paint extends WinApp {
             int i =0;
             for(Path x: this){
                 i++;
-                g.drawString(""+x.get(0),100,100+(i*20));
                 x.draw(g);
             }
         }

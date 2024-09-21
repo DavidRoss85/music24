@@ -8,7 +8,7 @@ import  java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-public class Tetris extends WinApp {
+public class Tetris extends WinApp implements ActionListener {
     public static Timer timer;
     public static final int xM = 50, yM = 50;
     public static final int H =20, W =10, C = 25;
@@ -26,8 +26,8 @@ public class Tetris extends WinApp {
 
     public static int time=1, iShape =0;
     public void paintComponent(Graphics g){
-        g.setColor(Color.RED);
-        g.fillRect(100,100,5000,5000);
+        //g.setColor(Color.RED);
+        //g.fillRect(100,100,5000,5000);
         /*time++;
         if(time==60){time=0; iShape= (iShape+1)%7;}
         if(time==30){shapes[iShape].rot();}
@@ -43,6 +43,7 @@ public class Tetris extends WinApp {
         if(vk==KeyEvent.VK_DOWN){shape.drop();}
         repaint();
     }
+
     @Override
     public void actionPerformed(ActionEvent e){repaint();}
 
