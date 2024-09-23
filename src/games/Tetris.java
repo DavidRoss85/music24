@@ -26,8 +26,8 @@ public class Tetris extends WinApp implements ActionListener {
 
     public static int time=1, iShape =0;
     public void paintComponent(Graphics g){
-        //g.setColor(Color.RED);
-        //g.fillRect(100,100,5000,5000);
+        g.setColor(Color.WHITE);
+        g.fillRect(0,0,5000,5000);
         /*time++;
         if(time==60){time=0; iShape= (iShape+1)%7;}
         if(time==30){shapes[iShape].rot();}
