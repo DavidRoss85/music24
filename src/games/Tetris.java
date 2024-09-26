@@ -12,19 +12,26 @@ public class Tetris extends WinApp implements ActionListener {
     public static Timer timer;
     public static final int xM = 50, yM = 50;
     public static final int H =20, W =10, C = 25;
-    public static Color[] color = {Color.RED,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.YELLOW,Color.MAGENTA};
+    public static Color[] color = {Color.RED,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.YELLOW,Color.MAGENTA,Color.BLACK};
     public static Shape[] shapes = {Shape.Z,Shape.S,Shape.J, Shape.L,Shape.I,Shape.O,Shape.T};
 
     public static Shape shape;
+    public static final int iBkColor = 7;
+    public static int[][] well = new int[W][H];
 
     public Tetris() {
         super("Tetris", 1000, 700);
-        shape=shapes[G.rnd(7)];
+        startNewGame();
         timer = new Timer(30,  this);
         timer.start();
     }
 
     public static int time=1, iShape =0;
+
+    public void startNewGame(){
+        shape=shapes[G.rnd(7)];
+        clearWell();
+    }
     public void paintComponent(Graphics g){
         g.setColor(Color.WHITE);
         g.fillRect(0,0,5000,5000);
@@ -32,9 +39,28 @@ public class Tetris extends WinApp implements ActionListener {
         if(time==60){time=0; iShape= (iShape+1)%7;}
         if(time==30){shapes[iShape].rot();}
         shapes[iShape].show(g);*/
+        showWell(g);
         shape.show(g);
     }
 
+    public static void clearWell(){
+        for(int x=0;x<W;x++){
+            for(int y=0;y<H;y++){
+                well[x][y]=iBkColor;
+            }
+        }
+    }
+    public static void showWell(Graphics g){
+        for(int x=0;x<W;x++){
+            for(int y=0;y<H;y++){
+                g.setColor(color[well[x][y]]);
+                int xx = xM + C * x, yy= yM + C * y;
+                g.fillRect(xx,yy,C,C);
+                g.setColor(Color.BLACK);
+                g.drawRect(xx,yy,C,C);
+            }
+        }
+    }
     public void keyPressed(KeyEvent ke){
         int vk = ke.getKeyCode();
         if(vk==KeyEvent.VK_LEFT){shape.slide(G.LEFT);}
@@ -100,7 +126,13 @@ public class Tetris extends WinApp implements ActionListener {
             for(int i=0; i<4; i++){a[i].add(temp);}
         }
 
-        public void drop(){} //STUB
+        public void drop(){
+            this.cdsSet();
+            this.cdsAdd(G.DOWN);
+            if(!this.collisionDetected()){
+                this.cdsGet();
+            }
+        }
 
         public static Shape cds = new Shape(new int[] {0,0, 0,0, 0,0, 0,0}, 0);
         public static boolean collisionDetected (){
