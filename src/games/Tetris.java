@@ -12,11 +12,11 @@ public class Tetris extends WinApp implements ActionListener {
     public static Timer timer;
     public static final int xM = 50, yM = 50;
     public static final int H =20, W =10, C = 25;
-    public static Color[] color = {Color.RED,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.YELLOW,Color.MAGENTA,Color.BLACK};
+    public static Color[] color = {Color.RED,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.YELLOW,Color.MAGENTA,Color.BLACK,Color.PINK};
     public static Shape[] shapes = {Shape.Z,Shape.S,Shape.J, Shape.L,Shape.I,Shape.O,Shape.T};
 
     public static Shape shape;
-    public static final int iBkColor = 7;
+    public static final int iBkColor = 7, zap=8;
     public static int[][] well = new int[W][H];
 
     public Tetris() {
@@ -39,6 +39,8 @@ public class Tetris extends WinApp implements ActionListener {
         if(time==60){time=0; iShape= (iShape+1)%7;}
         if(time==30){shapes[iShape].rot();}
         shapes[iShape].show(g);*/
+        time++;if(time==30){time=0;shape.drop();}
+        unzapWell();
         showWell(g);
         shape.show(g);
     }
@@ -61,11 +63,28 @@ public class Tetris extends WinApp implements ActionListener {
             }
         }
     }
+    public static void zapWell(){
+        for(int y=0;y<H;y++){zapRow(y);}
+    }
+    public static void zapRow(int y){
+        for(int x=0;x<W;x++){if(well[x][y]==iBkColor){return;}}
+        for(int x=0;x<W;x++){well[x][y]=zap;}
+    }
+    public static void unzapWell(){
+        for(int y=1;y<H;y++){
+            for(int x=0;x<W;x++){
+                if(well[x][y-1]!=zap && well[x][y]==zap){
+                    well[x][y]=well[x][y-1];
+                    well[x][y-1]=(y==1)? iBkColor: zap;
+                }
+            }
+        }
+    }
     public void keyPressed(KeyEvent ke){
         int vk = ke.getKeyCode();
         if(vk==KeyEvent.VK_LEFT){shape.slide(G.LEFT);}
         if(vk==KeyEvent.VK_RIGHT){shape.slide(G.RIGHT);}
-        if(vk==KeyEvent.VK_UP){shape.rot();}
+        if(vk==KeyEvent.VK_UP){shape.safeRot();}
         if(vk==KeyEvent.VK_DOWN){shape.drop();}
         repaint();
     }
@@ -84,6 +103,8 @@ public class Tetris extends WinApp implements ActionListener {
 
         public G.V[] a = new G.V[4];
         public int iColor;
+        public G.V loc = new G.V(4,0);
+
         static {
             Z=new Shape(new int[] {0,0, 1,0, 1,1, 2,1},0);
             S=new Shape(new int[] {0,1, 1,0, 1,1, 2,0},1);
@@ -111,10 +132,10 @@ public class Tetris extends WinApp implements ActionListener {
             for(int i = 0; i < 4; i++){g.drawRect(x(i),y(i),C,C);}
         }
 
-        public int x(int i){return xM+C * a[i].x;}
-        public int y(int i){return yM+C * a[i].y;}
+        public int x(int i){return xM+C * (a[i].x+loc.x);}
+        public int y(int i){return yM+C * (a[i].y+loc.y);}
 
-        public void rot(){
+        public void rot(){ //Unsafe - does not collision detect
             temp.set(0,0);
             for(int i=0; i<4; i++){
                 a[i].set(-a[i].y,a[i].x);
@@ -126,31 +147,52 @@ public class Tetris extends WinApp implements ActionListener {
             for(int i=0; i<4; i++){a[i].add(temp);}
         }
 
+        public void safeRot(){
+            rot(); //first assume we can rotate
+            cdsSet();
+            if(collisionDetected()){rot();rot();rot();}
+        }
+
         public void drop(){
             this.cdsSet();
             this.cdsAdd(G.DOWN);
-            if(!this.collisionDetected()){
-                this.cdsGet();
+            if(this.collisionDetected()){
+                copyToWell();
+                zapWell();
+                dropNewShape();
+            }
+            else{
+                loc.add(G.DOWN);
             }
         }
 
+        public void copyToWell(){
+            for(int i=0;i<4;i++){
+                well[a[i].x+loc.x][a[i].y+loc.y]=iColor;
+            }
+        }
+        public static void dropNewShape(){
+            shape=shapes[G.rnd(7)];
+            shape.loc.set(4,0);
+        }
         public static Shape cds = new Shape(new int[] {0,0, 0,0, 0,0, 0,0}, 0);
         public static boolean collisionDetected (){
             for(int i = 0; i<4; i++){
                 G.V v = cds.a[i];
                 if(v.x<0 ||v.x>=W||v.y<0||v.y>=H){return true;}
+                if(well[v.x][v.y]!=iBkColor && well[v.x][v.y]!=zap){return true;}
             }
             return false;
         }
 
-        public void cdsSet(){for(int i=0; i<4; i++){cds.a[i].set(a[i]);}}
+        public void cdsSet(){for(int i=0; i<4; i++){cds.a[i].set(a[i]);cds.a[i].add(loc);}}
         public void cdsGet(){for(int i=0; i<4; i++){a[i].set(cds.a[i]);}}
         public void cdsAdd(G.V v){for(int i=0; i<4; i++){cds.a[i].add(v);}}
         public void slide(G.V dx){
             cdsSet();
             cdsAdd(dx);
             if(collisionDetected()){return;}
-            cdsGet();
+            loc.add(dx);
         }
     }
 }
