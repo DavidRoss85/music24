@@ -13,7 +13,7 @@ public class PaintInk extends WinApp {
 
     public PaintInk(){
         super("PaintInk",UC.screenWidth, UC.screenHeight);
-        inkList.add(new Ink());
+        //inkList.add(new Ink());
     }
 
     public void paintComponent(Graphics g){
@@ -21,6 +21,13 @@ public class PaintInk extends WinApp {
         inkList.show(g);
         g.setColor(Color.RED);
         Ink.BUFFER.show(g);
+        g.drawString("Point: " + Ink.BUFFER.n,600,30);
+        if(inkList.size()>1){
+            int last = inkList.size()-1;
+            int dist = inkList.get(last).norm.dist(inkList.get(last-1).norm) ;
+            g.setColor(dist>UC.noMatchDist?Color.RED:Color.BLACK);
+            g.drawString("Dist: "+dist,600,60);
+        }
     }
 
     public void mousePressed(MouseEvent me){
