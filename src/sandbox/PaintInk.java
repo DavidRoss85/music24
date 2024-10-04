@@ -4,16 +4,18 @@ import graphics.G;
 import graphics.WinApp;
 import musics.UC;
 import reaction.Ink;
+import reaction.Shape;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class PaintInk extends WinApp {
     public static Ink.List inkList = new Ink.List();
-
+    public static Shape.Prototype.List pList = new Shape.Prototype.List();
     public PaintInk(){
         super("PaintInk",UC.screenWidth, UC.screenHeight);
         //inkList.add(new Ink());
+
     }
 
     public void paintComponent(Graphics g){
@@ -28,6 +30,7 @@ public class PaintInk extends WinApp {
             g.setColor(dist>UC.noMatchDist?Color.RED:Color.BLACK);
             g.drawString("Dist: "+dist,600,60);
         }
+        pList.show(g);
     }
 
     public void mousePressed(MouseEvent me){
@@ -40,7 +43,18 @@ public class PaintInk extends WinApp {
     }
     public void mouseReleased(MouseEvent me){
         Ink.BUFFER.up(me.getX(),me.getY());
-        inkList.add(new Ink());
+        Ink ink = new Ink();
+        Shape.Prototype proto;
+
+        inkList.add(ink);
+        if(pList.bestDist(ink.norm)<UC.noMatchDist){
+            proto = Shape.Prototype.List.bestMatch;
+            proto.blend(ink.norm);
+        }else{
+            proto = new Shape.Prototype();
+            pList.add(proto);
+        }
+        ink.norm=proto;
         repaint();
     }
 

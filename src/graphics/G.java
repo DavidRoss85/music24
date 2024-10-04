@@ -26,6 +26,9 @@ public class G{
         public void set(int x, int y){this.x = x; this.y = y;}
         public void set(V v){x=v.x; y=v.y;}
         public void add(V v){x += v.x; y += v.y;} // vector addition
+        public void blend(V v, int nBlend){
+            set((nBlend*x + v.x)/(nBlend+1),(nBlend*y + v.y)/(nBlend+1));
+        }
         //Transforms
         public void setT(V v){set(v.tx(),v.ty());}
         public int tx(){return x*T.n/T.d+T.dx;}
