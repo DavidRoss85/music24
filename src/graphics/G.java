@@ -22,7 +22,9 @@ public class G{
     public static class V {
         public static Transform T = new Transform();
         public int x,y;
+
         public V(int x, int y){this.set(x,y);}
+
         public void set(int x, int y){this.x = x; this.y = y;}
         public void set(V v){x=v.x; y=v.y;}
         public void add(V v){x += v.x; y += v.y;} // vector addition

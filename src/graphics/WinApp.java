@@ -27,7 +27,7 @@ import javax.swing.*;
 public class WinApp extends JPanel
         implements MouseListener, MouseMotionListener, KeyListener{
     public static JFrame FRAME;
-    public static WinApp PANEL; // JPanel that is also a lisener
+    public static WinApp PANEL; // JPanel that is also a listener
     public static String TITLE = "No Name";
     public static Dimension PREF_SIZE = new Dimension(500,400);
 
