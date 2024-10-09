@@ -1,6 +1,7 @@
 package graphics;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Random;
 
 public class G{
@@ -19,7 +20,7 @@ public class G{
 
 
     //-----------------------V------------------------
-    public static class V {
+    public static class V implements Serializable {
         public static Transform T = new Transform();
         public int x,y;
 
@@ -58,7 +59,7 @@ public class G{
     }
 
     //-----------------------VS-----------------------
-    public static class VS{
+    public static class VS implements Serializable{
         public V loc, size;
 
         public VS(int x, int y, int w, int h){
@@ -81,7 +82,7 @@ public class G{
     }
 
     //-----------------------LoHi---------------------
-    public static class LoHi{
+    public static class LoHi implements Serializable{
         public int lo,hi;
         public LoHi(int min, int max){lo=min;hi=max;}
         public void set(int v){lo=v;hi=v;}
@@ -89,7 +90,7 @@ public class G{
         public int size(){return hi-lo>0?hi-lo:1;}
     }
     //-----------------------BBox---------------------
-    public static class BBox{
+    public static class BBox implements Serializable{
         public LoHi h, v; //horizontal and vertical
         public BBox(){h=new LoHi(0,0);v=new LoHi(0,0);}
         public void set(int x, int y){h.set(x);v.set(y);}
@@ -99,7 +100,7 @@ public class G{
         public void draw(Graphics g){g.drawRect(h.lo,v.lo,h.hi-h.lo,v.hi-v.lo);}
     }
     //-----------------------PL-----------------------
-    public static class PL{
+    public static class PL implements Serializable {
         public V[] points;
         public PL(int count){
             points = new V[count];
