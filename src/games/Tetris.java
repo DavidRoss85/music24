@@ -14,12 +14,17 @@ public class Tetris extends WinApp implements ActionListener {
     //********David Ross:*********
     //Add a Score
     public static int score = 0;
+    public static int scoreMultiplier = 1;
     public static final int POINT_VALUE = 10;
+    public static final int LINE_CLEAR_VALUE = 100;
     public static final int LABEL_Y_OFFSET = 50;
     public static final int LABEL_X_OFFSET = 300;
 
     //Control Speed
-    public static int gameDelay = 45;
+    public static int gameDelay = 100;
+
+    //Key check
+    public static boolean dnPressed = false;
     //****************************
 
 
@@ -49,13 +54,15 @@ public class Tetris extends WinApp implements ActionListener {
         nextShape=shapes[G.rnd(7)];; //Next shape
         nextShape.loc.set(12,0);
         nextShape.fakeShape=true;
+        scoreMultiplier=1;
+        score=0;
 
         shape=shapes[G.rnd(7)];
         clearWell();
     }
     public void paintComponent(Graphics g){
         G.fillBack(g); //clears the screen
-        time++;if(time==gameDelay){time=0;shape.drop();}
+        time++;if(time>=gameDelay){time=0;shape.drop();}
         unzapWell();
         showWell(g);
         shape.show(g);
@@ -66,7 +73,7 @@ public class Tetris extends WinApp implements ActionListener {
     //********David Ross:*********
     public void showLabels(Graphics g){
         g.setColor(Color.BLACK);
-        g.drawString("Score: " + score,xM+LABEL_X_OFFSET,yM-LABEL_Y_OFFSET);
+        g.drawString("Score: " + score + " >> Multiplier X" + scoreMultiplier,xM+LABEL_X_OFFSET,yM-LABEL_Y_OFFSET);
         g.drawString("Next Shape: ",xM+LABEL_X_OFFSET,yM-10);
     }
     //****************************
@@ -96,7 +103,8 @@ public class Tetris extends WinApp implements ActionListener {
     public static void zapRow(int y){
         for(int x=0;x<W;x++){if(well[x][y]==iBkColor){return;}}
         for(int x=0;x<W;x++){well[x][y]=zap;}
-        score+=POINT_VALUE;
+        score+=scoreMultiplier*LINE_CLEAR_VALUE;
+        scoreMultiplier=1;
     }
     public static void unzapWell(){
         for(int y=1;y<H;y++){
@@ -113,8 +121,12 @@ public class Tetris extends WinApp implements ActionListener {
         if(vk==KeyEvent.VK_LEFT){shape.slide(G.LEFT);}
         if(vk==KeyEvent.VK_RIGHT){shape.slide(G.RIGHT);}
         if(vk==KeyEvent.VK_UP){shape.safeRot();}
-        if(vk==KeyEvent.VK_DOWN){shape.drop();}
+        if(vk==KeyEvent.VK_DOWN){shape.drop(); dnPressed=true;}
         //repaint();
+    }
+    public void keyReleased(KeyEvent ke){
+        int vk = ke.getKeyCode();
+        if(vk==KeyEvent.VK_DOWN){dnPressed=false; scoreMultiplier = 1;}
     }
 
     @Override
@@ -189,7 +201,11 @@ public class Tetris extends WinApp implements ActionListener {
         public void drop(){
             this.cdsSet();
             this.cdsAdd(G.DOWN);
+            if(dnPressed){scoreMultiplier++;}
             if(this.collisionDetected()){
+                if(loc.y<=0){
+                    //GAME SHOULD TERMINATE IN THIS BLOCK
+                }
                 copyToWell();
                 zapWell();
                 dropNewShape();
@@ -207,6 +223,8 @@ public class Tetris extends WinApp implements ActionListener {
             }
         }
         public static void dropNewShape(){
+            score+= scoreMultiplier*POINT_VALUE;
+            scoreMultiplier=1;
             shape=nextShape;
             shape.loc.set(4,0);
             shape.fakeShape=false;
@@ -215,6 +233,7 @@ public class Tetris extends WinApp implements ActionListener {
             nextShape.fakeShape=true;
             nextShape.loc.set(12,0); //Created boolean "fakeShape" to prevent copying to well with out of bounds index
         }
+
         public static Shape cds = new Shape(new int[] {0,0, 0,0, 0,0, 0,0}, 0);
         public static boolean collisionDetected (){
             for(int i = 0; i<4; i++){
