@@ -1,5 +1,7 @@
 package graphics;
 
+import reaction.Gesture;
+
 import java.awt.*;
 
 public interface I {
@@ -12,5 +14,7 @@ public interface I {
     public interface Show{
         public void show(Graphics g);
     }
+    public interface Act{public void act(Gesture g);}
+    public interface React extends Act{public int bid(Gesture g);}
 }
 

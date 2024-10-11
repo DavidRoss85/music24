@@ -64,7 +64,7 @@ public class Ink implements I.Show, Serializable{
         }
 
         public void clear(){n=0;}
-        public void show(Graphics g){drawN(g,n);bBox.draw(g);}
+        public void show(Graphics g){drawN(g,n);/*bBox.draw(g);*/}
 
         @Override
         public boolean hit(int x, int y) {return true;}
