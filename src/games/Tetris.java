@@ -45,7 +45,6 @@ public class Tetris extends WinApp implements ActionListener {
     public static Shape[] shapes = {Shape.Z,Shape.S,Shape.J, Shape.L,Shape.I,Shape.O,Shape.T};
 
     public static Shape shape;
-    public static int nextShapeIndex;
     public static final int iBkColor = 7, zap=8;
     public static int[][] well = new int[W][H];
 
@@ -56,11 +55,11 @@ public class Tetris extends WinApp implements ActionListener {
         timer.start();
     }
 
-    public static int time=1, iShape =0;
+    public static int time=0;//iShape =0;
 
     public void startNewGame(){
         gameIsOver=false;
-        nextShape=shapes[G.rnd(7)];; //Next shape
+        nextShape=shapes[G.rnd(7)]; //Next shape
         nextShape.loc.set(nXOffset,nYOffset);
         nextShape.fakeShape=true;
         scoreMultiplier=1;
