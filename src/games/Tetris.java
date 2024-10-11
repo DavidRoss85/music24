@@ -7,6 +7,7 @@ import java.awt.*;
 import  java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public class Tetris extends WinApp implements ActionListener {
 
@@ -14,7 +15,9 @@ public class Tetris extends WinApp implements ActionListener {
     //********David Ross:*********
     //Add a Score
     public static int score = 0;
+    public static int lastScore = 0;
     public static int scoreMultiplier = 1;
+    public static int levelMultiplier = 1;
     public static final int POINT_VALUE = 10;
     public static final int LINE_CLEAR_VALUE = 100;
     public static final int LABEL_Y_OFFSET = 50;
@@ -22,9 +25,15 @@ public class Tetris extends WinApp implements ActionListener {
 
     //Control Speed
     public static int gameDelay = 100;
+    public static boolean gameIsOver = false;
 
     //Key check
     public static boolean dnPressed = false;
+
+    //Next Shape
+    public static Shape nextShape;
+    public static final int nXOffset = 12;
+    public static final int nYOffset = 4;
     //****************************
 
 
@@ -36,7 +45,6 @@ public class Tetris extends WinApp implements ActionListener {
     public static Shape[] shapes = {Shape.Z,Shape.S,Shape.J, Shape.L,Shape.I,Shape.O,Shape.T};
 
     public static Shape shape;
-    public static Shape nextShape;
     public static int nextShapeIndex;
     public static final int iBkColor = 7, zap=8;
     public static int[][] well = new int[W][H];
@@ -51,8 +59,9 @@ public class Tetris extends WinApp implements ActionListener {
     public static int time=1, iShape =0;
 
     public void startNewGame(){
+        gameIsOver=false;
         nextShape=shapes[G.rnd(7)];; //Next shape
-        nextShape.loc.set(12,0);
+        nextShape.loc.set(nXOffset,nYOffset);
         nextShape.fakeShape=true;
         scoreMultiplier=1;
         score=0;
@@ -60,21 +69,56 @@ public class Tetris extends WinApp implements ActionListener {
         shape=shapes[G.rnd(7)];
         clearWell();
     }
+
+
     public void paintComponent(Graphics g){
-        G.fillBack(g); //clears the screen
-        time++;if(time>=gameDelay){time=0;shape.drop();}
-        unzapWell();
-        showWell(g);
-        shape.show(g);
-        nextShape.show(g);
-        showLabels(g); //Show score
+        if(!gameIsOver){
+            G.fillBack(g); //clears the screen
+            time++;if(time>=gameDelay){time=0;shape.drop();}
+            unzapWell();
+            showWell(g);
+            shape.show(g);
+            nextShape.show(g);
+            showLabels(g); //Show score
+        }else {
+            showGameOver(g);
+        }
     }
 
     //********David Ross:*********
     public void showLabels(Graphics g){
+        int fSize = 20;
+        Font gFont = new Font("Courier New",Font.BOLD,fSize);
         g.setColor(Color.BLACK);
-        g.drawString("Score: " + score + " >> Multiplier X" + scoreMultiplier,xM+LABEL_X_OFFSET,yM-LABEL_Y_OFFSET);
-        g.drawString("Next Shape: ",xM+LABEL_X_OFFSET,yM-10);
+        g.setFont(gFont);
+        g.drawString("Level: " + levelMultiplier,xM,yM);
+        g.drawString("Key multiplier X" + scoreMultiplier,xM+LABEL_X_OFFSET,yM+LABEL_Y_OFFSET-fSize-10);
+        g.drawString("Score: " + score,xM+LABEL_X_OFFSET,yM+LABEL_Y_OFFSET);
+        g.drawString("Next Shape: ",xM+LABEL_X_OFFSET,yM+LABEL_Y_OFFSET+fSize+10);
+    }
+    public void showGameOver(Graphics g){
+        g.setColor(Color.WHITE);
+        g.fillRect(xM,yM+200,1000,60);
+        Font gFont1 = new Font("Courier New",Font.BOLD,50);
+        Font gFont2 = new Font("Courier New",Font.BOLD,30);
+        g.setColor(Color.RED);
+        g.setFont(gFont1);
+        g.drawString("GAME OVER",xM,yM+230);
+        g.setFont(gFont2);
+        g.drawString("PRESS ENTER KEY",xM,yM+260);
+    }
+
+    public static void checkLevel(){
+        if(score-lastScore>(6000*levelMultiplier)){
+            increaseLevel();
+            lastScore=score;
+        }
+    }
+    public static void increaseLevel(){
+        levelMultiplier++;
+        if(gameDelay>5) {
+            gameDelay -= 5;
+        }
     }
     //****************************
 
@@ -103,8 +147,11 @@ public class Tetris extends WinApp implements ActionListener {
     public static void zapRow(int y){
         for(int x=0;x<W;x++){if(well[x][y]==iBkColor){return;}}
         for(int x=0;x<W;x++){well[x][y]=zap;}
-        score+=scoreMultiplier*LINE_CLEAR_VALUE;
+        //****David Ross****
+        score+=levelMultiplier*scoreMultiplier*LINE_CLEAR_VALUE;
         scoreMultiplier=1;
+        checkLevel();
+        //******************
     }
     public static void unzapWell(){
         for(int y=1;y<H;y++){
@@ -121,14 +168,21 @@ public class Tetris extends WinApp implements ActionListener {
         if(vk==KeyEvent.VK_LEFT){shape.slide(G.LEFT);}
         if(vk==KeyEvent.VK_RIGHT){shape.slide(G.RIGHT);}
         if(vk==KeyEvent.VK_UP){shape.safeRot();}
+
+        //***David Ross****************
+        if(vk==KeyEvent.VK_SPACE){shape.safeRot();}
         if(vk==KeyEvent.VK_DOWN){shape.drop(); dnPressed=true;}
-        //repaint();
+        if(vk==KeyEvent.VK_ENTER){if(gameIsOver){startNewGame();}}
+        //*****************************
     }
+
     public void keyReleased(KeyEvent ke){
         int vk = ke.getKeyCode();
         if(vk==KeyEvent.VK_DOWN){dnPressed=false; scoreMultiplier = 1;}
     }
-
+    public void mousePressed(MouseEvent me){
+        if(gameIsOver){startNewGame();}
+    }
     @Override
     public void actionPerformed(ActionEvent e){repaint();}
 
@@ -203,8 +257,10 @@ public class Tetris extends WinApp implements ActionListener {
             this.cdsAdd(G.DOWN);
             if(dnPressed){scoreMultiplier++;}
             if(this.collisionDetected()){
-                if(loc.y<=0){
-                    //GAME SHOULD TERMINATE IN THIS BLOCK
+                //*****David Ross****
+                //Restart if there is a collision at the top
+                if(shape.loc.y == 0){
+                    gameIsOver=true;
                 }
                 copyToWell();
                 zapWell();
@@ -223,7 +279,7 @@ public class Tetris extends WinApp implements ActionListener {
             }
         }
         public static void dropNewShape(){
-            score+= scoreMultiplier*POINT_VALUE;
+            score+= levelMultiplier*scoreMultiplier*POINT_VALUE;
             scoreMultiplier=1;
             shape=nextShape;
             shape.loc.set(4,0);
@@ -231,7 +287,7 @@ public class Tetris extends WinApp implements ActionListener {
 
             nextShape=shapes[G.rnd(7)];
             nextShape.fakeShape=true;
-            nextShape.loc.set(12,0); //Created boolean "fakeShape" to prevent copying to well with out of bounds index
+            nextShape.loc.set(nXOffset,nYOffset); //Created boolean "fakeShape" to prevent copying to well with out of bounds index
         }
 
         public static Shape cds = new Shape(new int[] {0,0, 0,0, 0,0, 0,0}, 0);
