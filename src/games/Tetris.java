@@ -17,7 +17,7 @@ public class Tetris extends WinApp implements ActionListener {
     public static int score = 0;
     public static int lastScore = 0;
     public static int scoreMultiplier = 1, levelMultiplier = 1, lineMultiplier = 0, lastLineMultiplier;
-    public static boolean challengeMode = true;
+    public static boolean challengeMode = false;
     public static final int POINT_VALUE = 10;
     public static final int LINE_CLEAR_VALUE = 100;
     public static final int LEVEL_THRESHOLD = 50000;
@@ -81,7 +81,7 @@ public class Tetris extends WinApp implements ActionListener {
         clearWell();
 
         //generate gray blocks if challenge mode is on
-        if(challengeMode){randomizeWell(levelMultiplier);}
+        if(challengeMode){randomizeWell(levelMultiplier,2);}
 
     }
 
@@ -170,10 +170,10 @@ public class Tetris extends WinApp implements ActionListener {
             }
         }
     }
-    public static void randomizeWell(int layers){
+    public static void randomizeWell(int layers, int c){
         for(int x=0;x<W;x++){
             for(int y=(H-1);y>=H-layers;y--){
-                well[x][y]= 8 - G.rnd(2);
+                well[x][y]= 8 - G.rnd(c);
             }
         }
     }
@@ -243,7 +243,9 @@ public class Tetris extends WinApp implements ActionListener {
         if(deltaY>=pxHeight) {
             //update level while shield is up:
             if(challengeMode){
-                randomizeWell(levelMultiplier);
+                randomizeWell(levelMultiplier,2);
+            }else{
+                clearWell();
             }
             if(pxHeight-moveFactor<=aniFactor){
                 advancingLevel=false;
