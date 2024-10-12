@@ -31,7 +31,7 @@ public class Tetris extends WinApp implements ActionListener {
     public static boolean gameIsOver=false, gamePaused=false;
     public static boolean breakingBricks=false, advancingLevel=false;
     public static int time=0, inputDelay=0, aniBreakFrame=0, aniLevelUpFrame=0; //iShape =0;
-    public static final int MAX_INPUT_DELAY = 5;
+    public static final int MAX_INPUT_DELAY = 5, MAX_GAME_DELAY=100, SPEED_UP_FACTOR=5;
 
     //Key check
     public static boolean dnPressed = false, upPressed = false, spcPressed = false;
@@ -58,7 +58,7 @@ public class Tetris extends WinApp implements ActionListener {
 
     public Tetris() {
         super("Tetris", 1000, 700);
-        startNewGame(1);
+        startNewGame(0);
         timer = new Timer(0,  this);
         timer.start();
     }
@@ -73,7 +73,8 @@ public class Tetris extends WinApp implements ActionListener {
         shape=shapes[G.rnd(NUM_SHAPES)];
 
         //reset score:
-        levelMultiplier=level;
+        levelMultiplier=1;
+        increaseLevel(level);
         scoreMultiplier=1;
         score=0;
 
@@ -146,19 +147,18 @@ public class Tetris extends WinApp implements ActionListener {
         if(challengeMode){
             if(!checkForGrey()){
                 score+=LEVEL_THRESHOLD*levelMultiplier;
-                increaseLevel();
+                increaseLevel(1);
             }
         }else if(score-lastScore>(LEVEL_THRESHOLD*levelMultiplier)){
-            increaseLevel();
+            increaseLevel(1);
             lastScore=score;
         }
     }
-    public static void increaseLevel(){
-        levelMultiplier++;
-        advancingLevel=true;
-        if(gameDelay>5) {
-            gameDelay -= 5;
-        }
+    public static void increaseLevel(int levels){
+        levelMultiplier+=levels;
+        advancingLevel= levels==0? false:true;
+        int newDelay = MAX_GAME_DELAY - (levelMultiplier * SPEED_UP_FACTOR);
+        gameDelay = newDelay < 0? 0: newDelay;
     }
 
     //****************************
@@ -305,12 +305,13 @@ public class Tetris extends WinApp implements ActionListener {
         if(vk==KeyEvent.VK_RIGHT){rtPressed=true;}
         if(vk==KeyEvent.VK_UP){/*shape.safeRot();*/upPressed=true;}
 
-        if(vk>=KeyEvent.VK_1 && vk <= KeyEvent.VK_9){startNewGame(vk-48);}
+        if(vk==KeyEvent.VK_0){startNewGame(9);}
+        if(vk>=KeyEvent.VK_1 && vk <= KeyEvent.VK_9){startNewGame(vk-49);}
         if(vk==KeyEvent.VK_C){challengeMode=!challengeMode;}
         if(vk==KeyEvent.VK_SPACE){/*shape.safeRot();*/spcPressed=true;}
         if(vk==KeyEvent.VK_DOWN){/*shape.drop();*/ dnPressed=true;}
         if(vk==KeyEvent.VK_ENTER){
-            if(gameIsOver){startNewGame(1);}else{gamePaused= !gamePaused;}
+            if(gameIsOver){startNewGame(0);}else{gamePaused= !gamePaused;}
         }
 
     }
@@ -324,7 +325,7 @@ public class Tetris extends WinApp implements ActionListener {
         if(vk==KeyEvent.VK_SPACE){spcPressed=false;}
     }
     public void mousePressed(MouseEvent me){
-        if(gameIsOver){startNewGame(1);}
+        if(gameIsOver){startNewGame(0);}
     }
     @Override
     public void actionPerformed(ActionEvent e){repaint();}
