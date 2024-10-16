@@ -174,7 +174,7 @@ public class Tetris extends WinApp implements ActionListener {
     public static void randomizeWell(int layers, int c){
         for(int x=0;x<W;x++){
             for(int y=(H-1);y>=H-layers;y--){
-                well[x][y]= 8 - G.rnd(c);
+                well[x][y]= iBkColor - G.rnd(c);
             }
         }
     }
@@ -244,6 +244,7 @@ public class Tetris extends WinApp implements ActionListener {
         if(deltaY>=pxHeight) {
             //update level while shield is up:
             if(challengeMode){
+                clearWell();
                 randomizeWell(levelMultiplier,2);
             }else{
                 clearWell();
