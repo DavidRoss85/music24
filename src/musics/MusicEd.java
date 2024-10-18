@@ -3,9 +3,7 @@ package musics;
 import graphics.G;
 import graphics.I;
 import graphics.WinApp;
-import reaction.Gesture;
-import reaction.Ink;
-import reaction.Layer;
+import reaction.*;
 import reaction.Shape;
 
 import javax.swing.*;
@@ -24,7 +22,17 @@ public class MusicEd extends WinApp {
     public static Page PAGE;
 
 
-    public MusicEd(){super("Music Editor",UC.screenWidth,UC.screenHeight);}
+    public MusicEd(){
+        super("Music Editor",UC.screenWidth,UC.screenHeight);
+        Reaction.intialReactions.addReaction(new Reaction("W-W") {
+            public int bid(Gesture g) {return 0;}
+            public void act(Gesture g) {
+                int y=g.vs.yM();
+                PAGE=new Page(y);
+                this.disable();
+            }
+        });
+    }
 
     public void paintComponent(Graphics g){
         G.fillBack(g);

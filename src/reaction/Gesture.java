@@ -33,12 +33,8 @@ public class Gesture {
         this.vs=vs;
     }
 
-    private void redoGesture(){
-        Reaction r = Reaction.best(this);
-        if(r!=null){UNDO.add(this);r.act(this);}else{recognized+=" NO BIDS";}
-    }
-
     public static void undo(){
+        System.out.println("UNDO");
         if(UNDO.size()>0){
             UNDO.remove(UNDO.size()-1);
             Layer.nuke();//eliminates all masses
@@ -46,9 +42,14 @@ public class Gesture {
             UNDO.redo();
         }
     }
-    private void doGesture(){
+
+    private void redoGesture(){
         Reaction r = Reaction.best(this);
         if(r!=null){r.act(this);}
+    }
+    private void doGesture(){
+        Reaction r = Reaction.best(this);
+        if(r!=null){UNDO.add(this);r.act(this);}else{recognized+=" NO BIDS";}
     }
     public static Gesture getNew(Ink ink){
         Shape s = Shape.recognize(ink);
