@@ -41,7 +41,7 @@ public class Tetris extends WinApp implements ActionListener {
     public static Shape nextShape;
     public static int nextShapeIndex = 0; //Using 2 different shape arrays for shape and next shape
     public static final int nXOffset = 12, nYOffset = 6;
-    public static final int SPECIAL_BLOCK_PERCENT = 0;
+    public static final int SPECIAL_BLOCK_PERCENT = 20;
 
     //****************************
 
@@ -51,11 +51,11 @@ public class Tetris extends WinApp implements ActionListener {
     public static final int xM = 50, yM = 100;
     public static final int H =20, W =10, C = 25;
     public static final int NUM_SHAPES = 7;
-    public static Color[] color = {Color.RED,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.YELLOW,Color.MAGENTA,Color.LIGHT_GRAY,Color.BLACK,Color.BLACK,Color.BLACK,Color.PINK};
+    public static Color[] color = {Color.RED,Color.GREEN,Color.BLUE,Color.ORANGE,Color.CYAN,Color.YELLOW,Color.MAGENTA,Color.PINK,Color.LIGHT_GRAY,Color.BLACK,Color.BLACK,Color.BLACK};
     public static Shape[] shapes = {Shape.Z,Shape.S,Shape.J, Shape.L,Shape.I,Shape.O,Shape.T,Shape.ONE};
     public static Shape[] shapes2 = {Shape.Z2,Shape.S2,Shape.J2, Shape.L2,Shape.I2,Shape.O2,Shape.T2,Shape.ONE2};
     public static Shape shape;
-    public static final int greyColor=7, iBkColor=8, zap=9, zapAnimate=10, specialBlock=11;
+    public static final int specialBlock=7, greyColor=8, iBkColor=9, zap=10, zapAnimate=11;
     public static int[][] well = new int[W][H];
 
     public Tetris() {
@@ -163,10 +163,10 @@ public class Tetris extends WinApp implements ActionListener {
         gameDelay = newDelay < 0? 0: newDelay;
     }
 
-    public static void placeSpecialBlock(int x, int y){
+    public void placeSpecialBlock(int x, int y){
         well[x][y] = specialBlock;
     }
-    public static void randomizeWell(int layers, int c){
+    public void randomizeWell(int layers, int c){
         if(layers>13){layers=13;}
         for(int x=0;x<W;x++){
             for(int y=(H-1);y>=H-layers;y--){
@@ -276,9 +276,9 @@ public class Tetris extends WinApp implements ActionListener {
             }
         }
         return false;
-
     }
-    public static int animateLevelUp(Graphics g,int frame){
+
+    public int animateLevelUp(Graphics g,int frame){
         int aniFactor = 5;
         int deltaY = frame * aniFactor;
         int pxHeight = H*C;
