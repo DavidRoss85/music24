@@ -15,8 +15,8 @@ public class Collapse extends WinApp implements ActionListener {
     public static final int nC = 13, nR =15;
     public static final int W = 60, H =40;
     public static int xM=100, yM=100;
-    public static Color[] color = {Color.BLUE,Color.CYAN,Color.GREEN,
-    Color.YELLOW,Color.RED,Color.PINK};
+    public static Color[] color = {Color.LIGHT_GRAY,Color.CYAN,Color.GREEN,
+            Color.YELLOW,Color.RED,Color.PINK};
     public static int[][] grid = new int[nC][nR];
     public static Timer timer;
     public static int nColor =3;
@@ -25,7 +25,7 @@ public class Collapse extends WinApp implements ActionListener {
     public Collapse(){
         super("Collapse", UC.screenWidth,UC.screenHeight);
         startNewGame();
-        timer = new Timer(15,this);
+        timer = new Timer(20,this);
         timer.start();
     }
 
@@ -153,10 +153,6 @@ public class Collapse extends WinApp implements ActionListener {
             for(int r=0;r<nR;r++){
                 g.setColor(color[grid[c][r]]);
                 g.fillRect(x(c),y(r),W,H);
-                if(grid[c][r]!=0){
-                    g.setColor(Color.BLACK);
-                    g.drawRect(x(c),y(r),W,H);
-                }
             }
         }
 
