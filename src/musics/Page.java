@@ -57,7 +57,7 @@ public class Page extends Mass {
         sysList.add(new Sys(this,sysTop));
 
     }
-    public void show(Graphics g){g.setColor(Color.CYAN);}
+    public void show(Graphics g){g.setColor(Color.BLACK);}
 
     //-----------------Margins----------------------------
     public static class Margins{
