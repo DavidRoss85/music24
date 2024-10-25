@@ -16,7 +16,12 @@ public class MusicEd extends WinApp {
 
 
 
-    public Layer BACK = new Layer("BACK"), FORE = new Layer("FORE");
+    //public Layer BACK = new Layer("BACK"), FORE = new Layer("FORE");
+    static{ //static blocks will run before other code
+        new Layer("BACK");
+        new Layer("NOTE");
+        new Layer("FORE");
+    }
     public static boolean training = false;
     public static I.Area curArea = Gesture.AREA;
     public static Page PAGE;
@@ -41,6 +46,11 @@ public class MusicEd extends WinApp {
         Ink.BUFFER.show(g);
         Layer.ALL.show(g);
         g.drawString(Gesture.recognized,900,30);
+        if(PAGE!=null){
+            Glyph.CLEF_G.showAt(g,8,100,PAGE.margins.top+4*8);
+//            Glyph.HEAD_HALF.showAt(g,8,200,PAGE.margins.top+4*8);
+
+        }
     }
 
     public void trainButton(MouseEvent me){
