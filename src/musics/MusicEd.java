@@ -49,7 +49,10 @@ public class MusicEd extends WinApp {
         if(PAGE!=null){
             Glyph.CLEF_G.showAt(g,8,100,PAGE.margins.top+4*8);
 //            Glyph.HEAD_HALF.showAt(g,8,200,PAGE.margins.top+4*8);
-
+//            int h=32;
+//            Glyph.HEAD_Q.showAt(g,h,200,PAGE.margins.top+4*h);
+//            g.setColor(Color.RED);
+//            g.drawRect(200,PAGE.margins.top+3*h,24*h/10,2*h);
         }
     }
 

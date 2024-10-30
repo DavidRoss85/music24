@@ -1,5 +1,6 @@
 package musics;
 
+import graphics.I;
 import reaction.Gesture;
 import reaction.Reaction;
 
@@ -26,7 +27,7 @@ public class Rest extends Duration{
             }
         });
 
-        addReaction(new Reaction("W-W") { //add Flag
+        addReaction(new Reaction("W-W") { //decrement flag
             public int bid(Gesture g) {
                 int y=g.vs.yM(), x1 = g.vs.xL(), x2=g.vs.xH(), x = Rest.this.time.x;
                 if(x1>x || x2<x){return UC.noBid;}
@@ -37,16 +38,29 @@ public class Rest extends Duration{
             }
         });
 
+        addReaction(new Reaction("DOT") {
+            public int bid(Gesture g) {
+                int xR = Rest.this.time.x, yR = Rest.this.y();
+                int x = g.vs.xM(), y = g.vs.yM();
+                if(x<xR || x>xR +40 || y<yR-40 || y>yR+40){return UC.noBid;}
+                return Math.abs(x-xR)+Math.abs(y-yR);
+            }
+            public void act(Gesture g) {
+                Rest.this.cycleDot();
+            }
+        });
+
     }
 
     public int y(){return staff.yOfLine(line);}
     private static Glyph[] glyphs =
             {Glyph.REST_W, Glyph.REST_H, Glyph.REST_Q, Glyph.REST_1F, Glyph.REST_2F, Glyph.REST_3F, Glyph.REST_4F};
 
-    @Override
+    public static int off=UC.AugDotOffset, sp=UC.AugDotSpacing;
     public void show(Graphics g) {
         int H = staff.fmt.H, y=y();
         Glyph glyph = glyphs[nFlag+2];
         glyph.showAt(g,H,time.x,y);
+        for(int i=0;i<nDot;i++){g.fillOval(time.x+off+i*sp,y-3*H/2,H*2/3,H*2/3);}
     }
 }
