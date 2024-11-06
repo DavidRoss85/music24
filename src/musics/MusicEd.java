@@ -38,7 +38,14 @@ public class MusicEd extends WinApp {
             }
         });
     }
-
+    public void testPoly(Graphics g){
+        int H = -8, x1=100, x2=200;
+        Beam.setMasterBeam(x1,100+G.rnd(100),x2,100+G.rnd(100));
+        g.drawLine(0,Beam.mY1,x1,Beam.mY1);
+        Beam.drawBeamStack(g,0,1,x1,x2,H);
+        g.setColor(Color.ORANGE);
+        Beam.drawBeamStack(g,1,3,x1+10,x2-10,H);
+    }
     public void paintComponent(Graphics g){
         G.fillBack(g);
         if(training){Shape.TRAINER.show(g);}
@@ -54,6 +61,9 @@ public class MusicEd extends WinApp {
 //            g.setColor(Color.RED);
 //            g.drawRect(200,PAGE.margins.top+3*h,24*h/10,2*h);
         }
+//        g.fillPolygon(poly);
+//        poly.ypoints[3]++;
+//        testPoly(g);
     }
 
     public void trainButton(MouseEvent me){
