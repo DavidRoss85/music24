@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.security.Key;
 
 public class MusicEd extends WinApp {
 
@@ -54,7 +53,8 @@ public class MusicEd extends WinApp {
         Layer.ALL.show(g);
         g.drawString(Gesture.recognized,900,30);
         if(PAGE!=null){
-            Glyph.CLEF_G.showAt(g,8,100,PAGE.margins.top+4*8);
+            Staff staff = PAGE.sysList.get(0).staffs.get(0);
+            Key.drawOnStaff(g,7,Key.fF,110,Glyph.SHARP,staff);
 //            Glyph.HEAD_HALF.showAt(g,8,200,PAGE.margins.top+4*8);
 //            int h=32;
 //            Glyph.HEAD_Q.showAt(g,h,200,PAGE.margins.top+4*h);

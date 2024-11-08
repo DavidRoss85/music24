@@ -17,7 +17,10 @@ public class Beam extends Mass {
     public Stem first(){return stems.get(0);}
     public Stem last(){return stems.get(stems.size()-1);}
     public void deleteBeam(){
-        for(Stem s: stems){s.beam =null;}
+        for(Stem s: stems){
+            s.beam =null;
+            deleteMass();
+        }
     }
     public void addStem(Stem s){
         if(s.beam==null){
@@ -95,4 +98,12 @@ public class Beam extends Mass {
     }
 
 
+    public void removeStem(Stem stem) {
+        if(stem==first() || stem==last()){
+            deleteBeam();
+        }else{
+            stems.remove(stem);
+            stems.sort();
+        }
+    }
 }

@@ -80,8 +80,8 @@ public class Head extends Mass implements Comparable<Head> {
     public void delete(){time.heads.remove(this);} //STUB
 
     public void show(Graphics g){
-        g.setColor(wrongSide?Color.GREEN:Color.BLUE);
-        if(stem!=null && stem.heads.size()!=0 && this== stem.firstHead()){g.setColor(Color.RED);}
+        g.setColor(stem==null?Color.BLUE:Color.BLACK);
+
         int H = staff.fmt.H;
         (forcedGlyph!=null?forcedGlyph:normalGlyph()).showAt(g,H,x(),y());
         if(stem!=null){
@@ -90,6 +90,7 @@ public class Head extends Mass implements Comparable<Head> {
                 g.fillOval(x()+off+i*sp,y()-3*H/2,H*2/3,H*2/3);
             }
         }
+        g.setColor(Color.BLACK);
     }
 
     public void unStem() {
