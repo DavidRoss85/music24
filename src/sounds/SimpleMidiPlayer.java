@@ -62,9 +62,10 @@ public class SimpleMidiPlayer {
         sequencer.stop();
     }
 
+// YAAY COMMENTS
 
 
-
+// STILL MORE COMMENTS
 
     private MidiEvent newEvent(int command, int channel,int note, int velocity, int tick) throws InvalidMidiDataException {
         MidiEvent event = null;
