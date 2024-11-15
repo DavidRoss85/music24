@@ -64,6 +64,7 @@ public class SimpleMidiPlayer {
 
 // YAAY COMMENTS
 
+
 // STILL MORE COMMENTS
 
     private MidiEvent newEvent(int command, int channel,int note, int velocity, int tick) throws InvalidMidiDataException {
