@@ -33,7 +33,7 @@ public class SimpleMidiPlayer {
             System.out.println(e.toString());
         }
     }
-    //Overload
+    //Overloading
     public void setInstrument(int channel, int instrument) throws InvalidMidiDataException {
         this.instrument = instrument;
         track.add(newEvent(INSTRUMENT,channel,instrument,0,0));
