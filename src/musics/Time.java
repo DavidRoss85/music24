@@ -1,8 +1,9 @@
 package musics;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class Time {
+public class Time implements Comparable<Time> {
 
     public int x;
     public Head.List heads = new Head.List();
@@ -17,6 +18,11 @@ public class Time {
             int y=h.y();
             if(y>y1&&y<y2){h.unStem();}
         }
+    }
+
+    @Override
+    public int compareTo(Time t) {
+        return x-t.x;
     }
 
 //    public void stemHeads(Staff staff, boolean up, int y1, int y2){
@@ -39,11 +45,15 @@ public class Time {
         public Sys sys;
 
         public List(Sys sys){this.sys=sys;}
+
         public Time getTime(int x){
             if(size()==0){return new Time(sys,x);}
             Time t = getClosestTime(x);
-            return (Math.abs(x-t.x)<UC.snapTime? t:new Time(sys,x));
+            Time res=(Math.abs(x-t.x)<UC.snapTime? t:new Time(sys,x));
+            this.sort();
+            return res;
         }
+
         public Time getClosestTime(int x){
             Time res = get(0);
             int bestSoFar = Math.abs(x-res.x);
@@ -52,6 +62,10 @@ public class Time {
                 if(dist<bestSoFar){res=t;bestSoFar=dist;}
             }
             return res;
+        }
+
+        public void sort(){
+            Collections.sort(this);
         }
     }
 }

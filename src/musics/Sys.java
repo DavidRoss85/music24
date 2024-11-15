@@ -105,6 +105,16 @@ public class Sys extends Mass {
         g.drawLine(x,yTop(),x,yBot());
         int xKey=x+UC.marginKeyOffset;
         initialKey.drawOnSys(g,this,xKey);
+        showTimes(g);
+    }
+
+    private void showTimes(Graphics g) {
+        int n=1;
+        g.setColor(Color.LIGHT_GRAY);
+        for(Time t: times){
+            g.drawString("" + n++,t.x,yTop()-15);
+        }
+        g.setColor(Color.BLACK);
     }
 
     public int yTop(){return staffs.sysTop();}
