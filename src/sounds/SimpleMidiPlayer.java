@@ -43,6 +43,7 @@ public class SimpleMidiPlayer {
         track.add(newEvent(INSTRUMENT,channel,instrument,0,time));
     }
 
+
     //Overload
     public void addToTrack(int channel, int note,int time) throws InvalidMidiDataException {
         this.track.add(newEvent(PLAY,channel,note,100,time));
