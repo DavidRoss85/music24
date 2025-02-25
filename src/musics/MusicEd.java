@@ -96,7 +96,7 @@ public class MusicEd extends WinApp {
     }
 
     private void renderAndPlay(Page page){
-        if(midiPlayer.sequencer.isRunning()){
+        if(page==null || midiPlayer.sequencer.isRunning()){
             return;
         }else{
             midiPlayer.sequencer.close();
@@ -110,10 +110,11 @@ public class MusicEd extends WinApp {
         }
 
         //Set these to global variables later:
-        int MKEY = 60;
+        int MKEY = 65;
+        int[] keyArr = {-8,-7,-5,-3,-1,0,2,4,5,7,9,11};// piano scale starting from E
         int PPQ = 16;
         int lastDuration=0;
-        int currTime=0;
+        int currTime=1;
         Sys theSys = page.sysList.getFirst();
 
         try{
@@ -128,13 +129,15 @@ public class MusicEd extends WinApp {
                 //Each head in time
                 for(Head head: time.heads){
 
-                    int note = MKEY - head.line; //note
+                    int note = MKEY - keyArr[head.line+1]; //note
                     int nFlags = head.stem==null? 0 : head.stem.nFlag;
                     int duration = convertFlagToTime(nFlags,PPQ); //length
+                    System.out.println(duration);
 
                     midiPlayer.addToTrack(1,note,currTime,duration);
                     lastDuration= Math.max(lastDuration,duration);
                 }
+                System.out.println("\n\n");
                 currTime+=lastDuration;
                 lastDuration=0;
             }
