@@ -1,6 +1,7 @@
 package musics;
 
 import graphics.I;
+import java.util.ArrayList;
 import reaction.Gesture;
 import reaction.Reaction;
 
@@ -15,6 +16,7 @@ public class Rest extends Duration{
     public Rest(Staff staff, Time time){
         this.staff=staff;
         this.time=time;
+        time.rests.add(this); //added to include in playback
 
         addReaction(new Reaction("E-E") { //add Flag
             public int bid(Gesture g) {
@@ -63,4 +65,9 @@ public class Rest extends Duration{
         glyph.showAt(g,H,time.x,y);
         for(int i=0;i<nDot;i++){g.fillOval(time.x+off+i*sp,y-3*H/2,H*2/3,H*2/3);}
     }
+
+
+    //----------------------List----------------------------------
+    public static class List extends ArrayList<Rest> {}
+
 }

@@ -120,6 +120,11 @@ public class MusicEd extends WinApp {
             //Each time
             for(Time time: theSys.times){
 
+                for(Rest rest: time.rests){
+                    int nFlags = rest.nFlag;
+                    int duration = convertFlagToTime(nFlags,PPQ); //length
+                    lastDuration=duration;
+                }
                 //Each head in time
                 for(Head head: time.heads){
 

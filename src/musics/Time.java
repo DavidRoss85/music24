@@ -7,6 +7,7 @@ public class Time implements Comparable<Time> {
 
     public int x;
     public Head.List heads = new Head.List();
+    public Rest.List rests = new Rest.List(); //Added to be included in playback
 
     private Time(Sys sys, int x){
         this.x=x;
