@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import sounds.SimpleMidiPlayer;
 
 public class MusicEd extends WinApp {
 
@@ -25,6 +26,8 @@ public class MusicEd extends WinApp {
     public static I.Area curArea = Gesture.AREA;
     public static Page PAGE;
 
+    //Added by me
+    public static SimpleMidiPlayer midiPlayer;
 
     public MusicEd(){
         super("Music Editor",UC.screenWidth,UC.screenHeight);
@@ -81,10 +84,85 @@ public class MusicEd extends WinApp {
         repaint();
     }
 
-    public void keyTyped(KeyEvent ke){if(training){Shape.TRAINER.keyTyped(ke);repaint();}}
+    public void keyTyped(KeyEvent ke){
+        if(training){Shape.TRAINER.keyTyped(ke);repaint();}
+    }
+
+    public void keyPressed(KeyEvent ke){
+       if(ke.getKeyCode()==KeyEvent.VK_0){
+            //Playmusic code here
+           this.renderAndPlay(PAGE);
+        }
+    }
+
+    private void renderAndPlay(Page page){
+        if(midiPlayer.sequencer.isRunning()){
+            return;
+        }else{
+            midiPlayer.sequencer.close();
+        }
+
+
+        try {
+            midiPlayer = new SimpleMidiPlayer(1, 16);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
+        //Set these to global variables later:
+        int MKEY = 60;
+        int PPQ = 16;
+        int lastDuration=0;
+        int currTime=0;
+        Sys theSys = page.sysList.getFirst();
+
+        try{
+            //Each time
+            for(Time time: theSys.times){
+
+                //Each head in time
+                for(Head head: time.heads){
+
+                    int note = MKEY - head.line; //note
+                    int nFlags = head.stem==null? 0 : head.stem.nFlag;
+                    int duration = convertFlagToTime(nFlags,PPQ); //length
+
+                    midiPlayer.addToTrack(1,note,currTime,duration);
+                    lastDuration= Math.max(lastDuration,duration);
+                }
+                currTime+=lastDuration;
+                lastDuration=0;
+            }
+
+            //play track
+            midiPlayer.playTrack();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Converts the flags on a stem to a duration (range -2 to 4).
+     * A bpq of < 16 will cause shorter notes to play incorrectly.
+     * @param nFlags as {@code int}
+     * @param bpq beats per quarter note as {@code int}
+     * @return duration as {@code int}
+     */
+    private int convertFlagToTime(int nFlags, int bpq){
+        nFlags*=-1; //more flags... less time
+
+        return (int) (Math.pow(2,nFlags) * bpq);
+    }
 
     public static void main(String[] args){
         PANEL= new MusicEd();
+        try{
+            midiPlayer = new SimpleMidiPlayer(1,16);
+        }catch(Exception e){
+            //Silently fail:
+            System.out.println(e);
+        }
         WinApp.launch();
     }
 }

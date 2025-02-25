@@ -16,6 +16,13 @@ public class SimpleMidiPlayer {
     private Sequence sequence;
     private Track track;
 
+    /**
+     * Constructor for SimpleMidiPlayer
+     * @param instrument instrument code
+     * @param timing in PPQ (Pulses per Quarter note)
+     * @throws MidiUnavailableException -disabled temporarily
+     * @throws InvalidMidiDataException - disabled temporarily
+     */
     public SimpleMidiPlayer(int instrument,int timing) throws MidiUnavailableException, InvalidMidiDataException {
         this.instrument=instrument;
         try{
@@ -45,20 +52,44 @@ public class SimpleMidiPlayer {
 
 
     //Overload
+    /**
+     * Adds a note to the track to be played once the playTrack is called
+     * @param channel channels represent instruments/concurrent tracks (range 0-15)
+     * @param note MIDI note as {@code int} (0-127)
+     * @param time when in the track the note should be played
+     * @throws InvalidMidiDataException
+     */
     public void addToTrack(int channel, int note,int time) throws InvalidMidiDataException {
         this.track.add(newEvent(PLAY,channel,note,100,time));
         this.track.add(newEvent(STOP,channel,note,100,time+DEFAULT_NOTE_LENGTH));
     }
+    /**
+     * Adds a note to the track to be played once the playTrack is called
+     * @param channel channels represent instruments/concurrent tracks (range 0-15)
+     * @param note MIDI note as {@code int} (0-127)
+     * @param time when in the track the note should be played
+     * @param length the length of time to play the note.
+     * @throws InvalidMidiDataException
+     */
     public void addToTrack(int channel, int note,int time, int length) throws InvalidMidiDataException {
         this.track.add(newEvent(PLAY,channel,note,100,time));
         this.track.add(newEvent(STOP,channel,note,100,time+length));
     }
 
     //Starts playing the sequence
+
+    /**
+     * Start playing the prepared track. Cannot dynamically add music once playTrack is called
+     * @throws InvalidMidiDataException
+     */
     public void playTrack() throws InvalidMidiDataException {
         sequencer.setSequence(sequence);
         sequencer.start();
     }
+
+    /**
+     * Stops playing music
+     */
     public void stopPlayback(){
         sequencer.stop();
     }

@@ -7,7 +7,8 @@ import java.awt.*;
 public abstract class Duration extends Mass {
     public abstract void show(Graphics g);
 
-    public int nFlag = 0, nDot = 0;
+    public int nFlag = 0; // range -2 to 4
+    public int nDot = 0; // range 0 to 3
 
     public Duration(){
         super("NOTE");
