@@ -115,31 +115,34 @@ public class MusicEd extends WinApp {
         int PPQ = 16;
         int lastDuration=0;
         int currTime=1;
-        Sys theSys = page.sysList.getFirst();
+        Sys.List sysList = page.sysList;
 
         try{
             //Each time
-            for(Time time: theSys.times){
+            for(Sys theSys: sysList ){
 
-                for(Rest rest: time.rests){
-                    int nFlags = rest.nFlag;
-                    int duration = convertFlagToTime(nFlags,PPQ); //length
-                    lastDuration=duration;
+                for(Time time: theSys.times){
+
+                    for(Rest rest: time.rests){
+                        int nFlags = rest.nFlag;
+                        int duration = convertFlagToTime(nFlags,PPQ); //length
+                        lastDuration=duration;
+                    }
+                    //Each head in time
+                    for(Head head: time.heads){
+
+                        int note = MKEY - keyArr[head.line+1]; //note
+                        int nFlags = head.stem==null? 0 : head.stem.nFlag;
+                        int duration = convertFlagToTime(nFlags,PPQ); //length
+                        System.out.println(duration);
+
+                        midiPlayer.addToTrack(1,note,currTime,duration);
+                        lastDuration= Math.max(lastDuration,duration);
+                    }
+                    System.out.println("\n\n");
+                    currTime+=lastDuration;
+                    lastDuration=0;
                 }
-                //Each head in time
-                for(Head head: time.heads){
-
-                    int note = MKEY - keyArr[head.line+1]; //note
-                    int nFlags = head.stem==null? 0 : head.stem.nFlag;
-                    int duration = convertFlagToTime(nFlags,PPQ); //length
-                    System.out.println(duration);
-
-                    midiPlayer.addToTrack(1,note,currTime,duration);
-                    lastDuration= Math.max(lastDuration,duration);
-                }
-                System.out.println("\n\n");
-                currTime+=lastDuration;
-                lastDuration=0;
             }
 
             //play track
