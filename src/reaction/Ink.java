@@ -20,9 +20,18 @@ public class Ink implements I.Show, Serializable{
     public void show(Graphics g) {g.setColor(UC.inkColor); norm.drawAt(g,vs);}
 
     //---------Norm-----------
+    /**
+     * Subclass of Ink which extends a PL(Point Line).
+     * N is the sample size, i.e. the number of points in the point line array
+     * NCS is the drawing area
+     */
     public static class Norm extends G.PL implements Serializable {
         public static final int N = UC.normSampleSize, MAX = UC.normCoordMax;
         public static final G.VS NCS = new G.VS(0,0,MAX,MAX);
+
+        /**
+         * Constructor for Norm
+         */
         public Norm(){
             super(N);
             BUFFER.subSample(this);

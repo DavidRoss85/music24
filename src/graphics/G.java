@@ -195,6 +195,7 @@ public class G{
         public int size(){return hi-lo>0?hi-lo:1;}
     }
     //-----------------------BBox---------------------
+    /**Bounding box (Keeps track of the maximum bounds ie high and low coords)*/
     public static class BBox implements Serializable{
         public LoHi h, v; //horizontal and vertical
         public BBox(){h=new LoHi(0,0);v=new LoHi(0,0);}
