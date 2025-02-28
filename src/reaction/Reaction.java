@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class Reaction implements I.React{
-    private static Map byShape = new Map();
+    private static Map byShape = new Map(); //A hashmap mapping a shape to a list of similar shapes
     public static List intialReactions = new List(); //used by undo to restart everything
 
     public Shape shape;

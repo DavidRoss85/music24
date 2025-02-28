@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.TreeMap;
 
+/** Stores and retrieves gesture shapes*/
 public class Shape implements Serializable{
     public static Shape.Database DB = Shape.Database.load();
     public static Shape DOT = DB.get("DOT");
@@ -95,6 +96,7 @@ public class Shape implements Serializable{
     public static class Prototype extends Ink.Norm implements Serializable{
         public int nBlend = 0;
 
+        /** Blends the provided Norm with it's own Norm*/
         public void blend(Ink.Norm norm){
             blend(norm,nBlend);
             nBlend++;

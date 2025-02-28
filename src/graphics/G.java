@@ -45,6 +45,12 @@ public class G{
          */
         public void add(V v){x += v.x; y += v.y;} // vector addition
 
+        /**
+         * Blends the points together with another using a blend factor
+         * Uses a weighted average, with nBlend as the weight
+         * @param v point to blend with this
+         * @param nBlend weight given to the current object's coordinates {@code int}
+         */
         public void blend(V v, int nBlend){
             set((nBlend*x + v.x)/(nBlend+1),(nBlend*y + v.y)/(nBlend+1));
         }
@@ -186,7 +192,8 @@ public class G{
         public void set(int v){lo=v;hi=v;}
 
         /**
-         * Keep track of high and low
+         * Keeps track of high and low
+         * Compares if v is higher than hi or lower than lo and stores if it is
          * @param v new number as {@code int}
          */
         public void add(int v){if (v < lo) {lo=v;};if(v>hi){hi=v;}}
@@ -199,7 +206,14 @@ public class G{
     public static class BBox implements Serializable{
         public LoHi h, v; //horizontal and vertical
         public BBox(){h=new LoHi(0,0);v=new LoHi(0,0);}
+
+        /**
+         * Sets the initial high and low values for x and y
+         * @param x as {@code int}
+         * @param y as {@code int}
+         */
         public void set(int x, int y){h.set(x);v.set(y);}
+
         public void add(int x, int y){h.add(x);v.add(y);}
         public void add(V v){add(v.x,v.y);}
         public VS getNewVS(){return new VS(h.lo, v.lo,h.hi-h.lo,v.hi-v.lo);}

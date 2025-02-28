@@ -5,12 +5,14 @@ import reaction.Gesture;
 import java.awt.*;
 
 public interface I {
+    /** Implements the hit, dn, up, and drag methods */
     public interface Area{
         public boolean hit(int x, int y);
         public void dn(int x, int y);
         public void drag(int x, int y);
         public void up(int x, int y);
     }
+    /** Implements the show method */
     public interface Show{
         public void show(Graphics g);
     }
