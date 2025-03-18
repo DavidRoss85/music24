@@ -3,6 +3,7 @@ package musics;
 import graphics.G;
 import graphics.I;
 import graphics.WinApp;
+import java.awt.event.MouseWheelEvent;
 import reaction.*;
 import reaction.Shape;
 
@@ -22,6 +23,7 @@ public class MusicEd extends WinApp {
         new Layer("NOTE");
         new Layer("FORE");
     }
+    public static final int SCROLL_SPEED = 10;
     public static boolean training = false;
     public static I.Area curArea = Gesture.AREA;
     public static Page PAGE;
@@ -29,6 +31,9 @@ public class MusicEd extends WinApp {
     //Added by me
     public static SimpleMidiPlayer midiPlayer;
 
+    /**
+     * Reaction.initialReactions is a static list in the Reaction class that holds reactions
+     */
     public MusicEd(){
         super("Music Editor",UC.screenWidth,UC.screenHeight);
         Reaction.intialReactions.addReaction(new Reaction("W-W") {
@@ -89,10 +94,37 @@ public class MusicEd extends WinApp {
     }
 
     public void keyPressed(KeyEvent ke){
-       if(ke.getKeyCode()==KeyEvent.VK_0){
-            //Playmusic code here
-           this.renderAndPlay(PAGE);
+
+        if(PAGE!=null){
+            if(ke.getKeyCode()==KeyEvent.VK_0){
+                //Playmusic code here
+                this.renderAndPlay(PAGE);
+            }
+            if(ke.getKeyCode()==KeyEvent.VK_UP){
+                PAGE.pageTop.setDv(
+                    PAGE.pageTop.v()<= PAGE.margins.top ?
+                        PAGE.pageTop.v()+SCROLL_SPEED
+                        : PAGE.margins.top
+                );
+            }
+            if(ke.getKeyCode()==KeyEvent.VK_DOWN){
+                PAGE.pageTop.setDv(PAGE.pageTop.v()-SCROLL_SPEED);
+            }
         }
+        repaint();
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent me){
+        int amount=me.getWheelRotation();
+        if(PAGE!=null){
+            PAGE.pageTop.setDv(
+                PAGE.pageTop.v()<= PAGE.margins.top ?
+                    PAGE.pageTop.v()-(amount*SCROLL_SPEED)
+                    : PAGE.margins.top
+            );
+        }
+        repaint();
     }
 
     private void renderAndPlay(Page page){

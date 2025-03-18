@@ -22,10 +22,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import javax.swing.*;
 
 public class WinApp extends JPanel
-        implements MouseListener, MouseMotionListener, KeyListener{
+        implements MouseListener, MouseMotionListener, KeyListener, MouseWheelListener {
     public static JFrame FRAME;
     public static WinApp PANEL; // JPanel that is also a listener
     public static String TITLE = "No Name";
@@ -49,6 +51,7 @@ public class WinApp extends JPanel
         // add in the listeners first
         PANEL.addMouseListener(PANEL); // mouseListeners added to panel
         PANEL.addMouseMotionListener(PANEL);
+        PANEL.addMouseWheelListener(PANEL);
 
         javax.swing.SwingUtilities.invokeLater(
                 new Runnable(){ public void run(){createAndShowGUI();} }
@@ -70,6 +73,8 @@ public class WinApp extends JPanel
     public void mouseDragged(MouseEvent me) {}
     @Override
     public void mouseMoved(MouseEvent me) {}
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {}
 
     @Override
     public void keyTyped(KeyEvent ke) {}
