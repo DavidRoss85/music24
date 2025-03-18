@@ -143,7 +143,10 @@ public class Staff extends Mass {
         Collections.sort(clefs);
     }
 
+    /*** Returns the hierarchical coordinate for the y top
+     * @return coordinate as int*/
     public int yTop(){return staffTop.v();}
+
     public int yOfLine(int line){return yTop()+line* fmt.H;}
     public int lineOfY(int y){
         int H = fmt.H;
