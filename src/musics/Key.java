@@ -23,8 +23,13 @@ public class Key {
         for(Staff staff: sys.staffs){
             if(n==0){return;}
             int[] arr;
+            if (staff.clefAtX(x)==null) return;
             boolean isG=staff.clefAtX(x).glyph==Glyph.CLEF_G;
-            if(n>0){arr=isG?sG:sF;}else{arr=isG?fG:fF;}
+            if(n>0){
+                arr=isG?sG:sF;
+            }else{
+                arr=isG?fG:fF;
+            }
             drawOnStaff(g,Math.abs(n),arr,x,glyph,staff);
         }
     }
