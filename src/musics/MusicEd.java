@@ -131,6 +131,7 @@ public class MusicEd extends WinApp {
      * @param page page object
      */
     private void renderAndPlay(Page page){
+
         if(page==null || midiPlayer.sequencer.isRunning()){
             return;
         }else{
@@ -144,37 +145,44 @@ public class MusicEd extends WinApp {
             System.out.println(e);
         }
 
-        //Set these to global variables later:
 
         int PPQ = 16;
-        int lastDuration=0;
-        int currTime=1;
+
         Sys.List sysList = page.sysList;
+        int staffCount = sysList.getFirst().staffs.size(); //number of staffs in sys
+        int[] lastDuration= new int[staffCount];
+        int[] currTime= new int[staffCount];
 
         try{
-            //Each time
+            //For each Sys
             for(Sys theSys: sysList ){
 
+                //Each time
                 for(Time time: theSys.times){
 
+                    //Get duration if note is a rest
                     for(Rest rest: time.rests){
                         int nFlags = rest.nFlag;
                         int duration = convertFlagToTime(nFlags,PPQ); //length
-                        lastDuration=duration;
+                        int staffNum = theSys.staffs.indexOf(rest.staff);
+                        lastDuration[staffNum]=duration;
                     }
                     //Each head in time
                     for(Head head: time.heads){
                         System.out.println(head.line);
                         int note = convertHeadToNote(head);
                         int duration = calculateDuration(head,PPQ);
-                        System.out.println(duration);
-
-                        midiPlayer.addToTrack(1,note,currTime,duration);
-                        lastDuration= Math.max(lastDuration,duration);
+                        int staffNum = theSys.staffs.indexOf(head.staff);
+                        int channel = staffNum + 1;
+                        midiPlayer.addToTrack(channel,note,currTime[staffNum],duration);
+                        lastDuration[staffNum]= Math.max(lastDuration[staffNum],duration);
                     }
                     System.out.println("\n\n");
-                    currTime+=lastDuration;
-                    lastDuration=0;
+
+                    for(int i=0;i<staffCount;i++){
+                        currTime[i]+=lastDuration[i];
+                        lastDuration[i]=0;
+                    }
                 }
             }
 
@@ -225,6 +233,11 @@ public class MusicEd extends WinApp {
         return head.accid.iGlyph-2;
     }
 
+    /**
+     * Converts key signature to note changes
+     * @param head head containing note
+     * @return change in note value as {@code int}
+     */
     private int convertKeyToGain(Head head){
         int keyN = head.staff.sys.initialKey.n;
         int noteAjustment = 0;
