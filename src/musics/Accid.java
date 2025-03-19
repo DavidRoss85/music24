@@ -6,6 +6,9 @@ import reaction.Reaction;
 
 import java.awt.*;
 
+/**
+ * Accidentals (Sharps/flats etc)
+ */
 public class Accid extends Mass {
     public static Glyph[] GLYPHS = {Glyph.DFLAT,Glyph.FLAT,Glyph.NATURAL,Glyph.SHARP,Glyph.DSHARP};
     public static final int FLAT = 1, NATURAL=2, SHARP=3;
