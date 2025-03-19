@@ -7,7 +7,6 @@ import java.awt.event.MouseWheelEvent;
 import reaction.*;
 import reaction.Shape;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -142,8 +141,7 @@ public class MusicEd extends WinApp {
         }
 
         //Set these to global variables later:
-        int MKEY = 65;
-        int[] keyArr = {-8,-7,-5,-3,-1,0,2,4,5,7,9,11};// piano scale starting from E
+
         int PPQ = 16;
         int lastDuration=0;
         int currTime=1;
@@ -162,8 +160,8 @@ public class MusicEd extends WinApp {
                     }
                     //Each head in time
                     for(Head head: time.heads){
-
-                        int note = MKEY - keyArr[head.line+1]; //note
+                        System.out.println(head.line);
+                        int note = convertHeadToNote(head);
                         int nFlags = head.stem==null? 0 : head.stem.nFlag;
                         int duration = convertFlagToTime(nFlags,PPQ); //length
                         System.out.println(duration);
@@ -183,6 +181,28 @@ public class MusicEd extends WinApp {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    private int convertHeadToNote(Head head){
+        int note =0;
+
+        int G_KEY = 60; // 60 is Middle C
+        int F_KEY = 36; // Two octaves below middle C
+        int[] keyArr = {11,9,7,5,4,2,0,-1,-3,-5,-7,-8,-10};// piano scale. Adds to key to produce notes
+        int G_OFFSET = 3;
+        int F_OFFSET = 1;
+        int arrOffset = F_OFFSET;
+        int startNote = F_KEY;
+
+        //Sets the offset for the array for note scaling and start note
+
+        if(head.staff.initialClef()==null || head.staff.initialClef().glyph.equals(Glyph.CLEF_G)) {
+            startNote = G_KEY;
+            arrOffset = G_OFFSET;
+        }
+
+        note = startNote + keyArr[head.line + arrOffset]; //note
+        return note;
     }
 
     /**
