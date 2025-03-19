@@ -126,6 +126,10 @@ public class MusicEd extends WinApp {
         repaint();
     }
 
+    /**
+     * Cycles through a specified page and plays all notes as MIDI
+     * @param page page object
+     */
     private void renderAndPlay(Page page){
         if(page==null || midiPlayer.sequencer.isRunning()){
             return;
@@ -162,8 +166,7 @@ public class MusicEd extends WinApp {
                     for(Head head: time.heads){
                         System.out.println(head.line);
                         int note = convertHeadToNote(head);
-                        int nFlags = head.stem==null? 0 : head.stem.nFlag;
-                        int duration = convertFlagToTime(nFlags,PPQ); //length
+                        int duration = calculateDuration(head,PPQ);
                         System.out.println(duration);
 
                         midiPlayer.addToTrack(1,note,currTime,duration);
@@ -183,6 +186,11 @@ public class MusicEd extends WinApp {
         }
     }
 
+    /**
+     * Converts a head's position to a MIDI note value
+     * @param head the head to analyze
+     * @return MIDI note value as {@code int}
+     */
     private int convertHeadToNote(Head head){
         int note =0;
 
@@ -202,7 +210,35 @@ public class MusicEd extends WinApp {
         }
 
         note = startNote + keyArr[head.line + arrOffset]; //note
+        note +=convertAccidToGain(head);
         return note;
+    }
+
+    /**
+     * Converts an accidental to a note gain or loss
+     * @param head the head object for the note
+     * @return note gain as {@code int}
+     */
+    private int convertAccidToGain(Head head){
+        if(head.accid==null) return 0;
+        return head.accid.iGlyph-2;
+    }
+
+    /**
+     * Calculate the duration of a note
+     * @param head head object to reference
+     * @param ppq current ppq set
+     * @return duration of note as {@code int}
+     */
+    private int calculateDuration(Head head, int ppq){
+        if (head.stem==null) return 0;
+
+        int nFlags = head.stem.nFlag, nDots = head.stem.nDot;
+
+        int duration = convertFlagToTime(nFlags,ppq); //length
+        duration += convertDotToTime(duration, nDots);
+
+        return duration;
     }
 
     /**
@@ -216,6 +252,22 @@ public class MusicEd extends WinApp {
         nFlags*=-1; //more flags... less time
 
         return (int) (Math.pow(2,nFlags) * bpq);
+    }
+
+    /**
+     * Adds the dots on a stem to the duration of the note
+     * @param duration the duration of the note
+     * @param nDots number of dots per head
+     * @return new duration
+     */
+    private int convertDotToTime(int duration, int nDots){
+        int durationIncrease = duration;
+        int totalIncrease = 0;
+        for(int i=0;i<nDots;i++){
+            durationIncrease /= 2;
+            totalIncrease += durationIncrease;
+        }
+        return totalIncrease;
     }
 
     public static void main(String[] args){
