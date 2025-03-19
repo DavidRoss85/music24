@@ -211,6 +211,7 @@ public class MusicEd extends WinApp {
 
         note = startNote + keyArr[head.line + arrOffset]; //note
         note +=convertAccidToGain(head);
+        note +=convertKeyToGain(head);
         return note;
     }
 
@@ -222,6 +223,30 @@ public class MusicEd extends WinApp {
     private int convertAccidToGain(Head head){
         if(head.accid==null) return 0;
         return head.accid.iGlyph-2;
+    }
+
+    private int convertKeyToGain(Head head){
+        int keyN = head.staff.sys.initialKey.n;
+        int noteAjustment = 0;
+        int[] sArr, fArr;
+        if(keyN==0) return 0;
+        if(head.staff.initialClef().glyph.equals(Glyph.CLEF_G)) {
+            sArr = Key.sG; fArr = Key.fG;
+        }else{
+            sArr = Key.sF; fArr = Key.fF;
+        }
+
+        for(int i=0; i<Math.abs(keyN); i++){
+            if(keyN>0 && head.line==sArr[i]){
+                noteAjustment++;
+                break;
+            }
+            if(keyN<0 && head.line==fArr[i]){
+                noteAjustment--;
+                break;
+            }
+        }
+        return noteAjustment;
     }
 
     /**
