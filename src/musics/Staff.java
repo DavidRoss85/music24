@@ -107,7 +107,7 @@ public class Staff extends Mass {
                 return dTop+dBot;
             }
             public void act(Gesture g) {
-                if(Staff.this.inititalClef()==null){
+                if(Staff.this.initialClef()==null){
                     setInitialClef(Glyph.CLEF_G);
                 }else{
                     addNewClef(Glyph.CLEF_G,g.vs.xM());
@@ -122,7 +122,7 @@ public class Staff extends Mass {
                 return dTop+dBot;
             }
             public void act(Gesture g) {
-                if(Staff.this.inititalClef()==null){
+                if(Staff.this.initialClef()==null){
                     setInitialClef(Glyph.CLEF_F);
                 }else{
                     addNewClef(Glyph.CLEF_F,g.vs.xM());
@@ -166,7 +166,7 @@ public class Staff extends Mass {
         for(int i=0;i<fmt.nLines;i++){
             g.drawLine(x1,y+i*h,x2,y+i*h);
         }
-        Clef clef = inititalClef();
+        Clef clef = initialClef();
         int x = sys.page.margins.left + UC.initialClefOffset;
         if(clef!=null){clef.glyph.showAt(g,fmt.H,x,yOfLine(4));}
     }
@@ -174,7 +174,7 @@ public class Staff extends Mass {
 
     public Clef lastClef(){return clefs ==null? null:clefs.get(clefs.size()-1);}
     public Clef firstClef(){return clefs ==null? null:clefs.get(0);}
-    public Clef inititalClef(){
+    public Clef initialClef(){
         Staff s = this, ps = prevStaff();
         while(ps!=null && ps.clefs==null){
             s=ps;
@@ -184,7 +184,7 @@ public class Staff extends Mass {
     }
 
     public Clef clefAtX(int x) {
-        Clef iClef = inititalClef();
+        Clef iClef = initialClef();
         if (iClef==null){return null;}
         Clef ret = iClef;
         for(Clef clef: clefs){
