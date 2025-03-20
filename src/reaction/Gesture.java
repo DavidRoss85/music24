@@ -10,10 +10,22 @@ public class Gesture {
     public static String recognized = "NULL";
     private static List UNDO = new List();
 
+    /**
+     * Defines an I.Area object and assigns it to AREA.
+     * AREA captures the mouse actions in the window.
+     */
     public static I.Area AREA = new I.Area() {
         public boolean hit(int x, int y) {return true;}
         public void dn(int x, int y) {Ink.BUFFER.dn(x,y);}
         public void drag(int x, int y) {Ink.BUFFER.drag(x,y);}
+
+
+        /**
+         * Takes the ink buffer and calls getNew() which references the shape database and
+         * returns a gesture which contains a recognized shape plus a vs (bbox of gesture)
+         * @param x
+         * @param y
+         */
         public void up(int x, int y) {
             Ink.BUFFER.up(x,y);
             Ink ink = new Ink();

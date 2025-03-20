@@ -7,6 +7,9 @@ import reaction.Reaction;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Class for a head. Head extends Mass, Mass extends Reaction.List
+ */
 public class Head extends Mass implements Comparable<Head> {
 
     public Staff staff;
@@ -100,6 +103,17 @@ public class Head extends Mass implements Comparable<Head> {
             }
         });
     }
+    //Notes:
+    // To move the reactions outside the constructor, we need a method that can dynamically assign a bid number
+    // the dimensions to react to as well as dynamically assign an action.
+    // In that case, every object class will define a set of actions that can be performed on it.
+    // There will need to be a generalized way of calculating where a gesture was made.
+    // This could be difficult, for example a "DOT" gesture only has an x,y coordinate while an
+    // E-E gesture has width. So there needs to be a way to calculate maybe the center or at least
+    // the desired area of operation for each type of gesture.
+    // In these examples dist is used ot determine the bid.
+    // Suggestion: A hit-box for a gesture could be generated and then a calculation from the hit-box's midpoint could be used to
+    // determine the dist.
 
     public void deleteHead() {
         if(accid!=null){accid.deleteAccid();}
