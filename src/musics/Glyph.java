@@ -41,6 +41,17 @@ public class Glyph{
     public static Glyph DFLAT = new Glyph((char)61514, 16, 0, 4);
     public static Glyph DSHARP = new Glyph((char)61515, 16, 0, 7);
 
+    public static Glyph NUM_0 = new Glyph((char)61516, 16, 0, 7);
+    public static Glyph NUM_1 = new Glyph((char)61517, 16, 0, 7);
+    public static Glyph NUM_2 = new Glyph((char)61518, 16, 0, 7);
+    public static Glyph NUM_3 = new Glyph((char)61519, 16, 0, 7);
+    public static Glyph NUM_4 = new Glyph((char)61520, 16, 0, 7);
+    public static Glyph NUM_5 = new Glyph((char)61521, 16, 0, 7);
+    public static Glyph NUM_6 = new Glyph((char)61522, 16, 0, 7);
+    public static Glyph NUM_7 = new Glyph((char)61523, 16, 0, 7);
+    public static Glyph NUM_8 = new Glyph((char)61524, 16, 0, 7);
+    public static Glyph NUM_9 = new Glyph((char)61525, 16, 0, 7);
+
     public static int theSize = -1;
     public static Font theFont;
 
